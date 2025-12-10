@@ -1,10 +1,7 @@
 package dev.bouncingelf10.timelessexample;
 
 import dev.bouncingelf10.timelesslib.TimelessLibClient;
-import dev.bouncingelf10.timelesslib.api.time.Duration;
-import dev.bouncingelf10.timelesslib.api.time.TimeConversions;
-import dev.bouncingelf10.timelesslib.api.time.TimeFormatter;
-import dev.bouncingelf10.timelesslib.api.time.TimeParser;
+import dev.bouncingelf10.timelesslib.api.time.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents;
@@ -33,7 +30,7 @@ public class TimelessExampleModClient implements ClientModInitializer {
             String text = component.toFlatList().getLast().getString();
             try {
                 Duration time = TimeParser.parse(text);
-                DemoHudOverlay.chatParsedTimeString = time.toString(TimeFormatter.TimeFormat.DIGITAL_MILLIS);
+                DemoHudOverlay.chatParsedTimeString = time.toString(TimeFormat.DIGITAL_MILLIS);
             } catch (Exception e) {
                 DemoHudOverlay.chatParsedTimeString = e.getMessage();
             }

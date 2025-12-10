@@ -1,16 +1,17 @@
 package dev.bouncingelf10.timelessexample;
 
-import dev.bouncingelf10.timelesslib.TimelessClock;
 import dev.bouncingelf10.timelesslib.TimelessLibClient;
 import dev.bouncingelf10.timelesslib.api.animation.AnimationTimeline;
 import dev.bouncingelf10.timelesslib.api.animation.Easing;
 import dev.bouncingelf10.timelesslib.api.animation.Interpolation;
+import dev.bouncingelf10.timelesslib.api.clock.TimeSources;
 import dev.bouncingelf10.timelesslib.api.cooldown.ClientCooldownManager;
-import dev.bouncingelf10.timelesslib.api.countdown.CountdownManager;
+import dev.bouncingelf10.timelesslib.api.countdown.Countdown;
 import dev.bouncingelf10.timelesslib.api.scheduler.Scheduler;
 import dev.bouncingelf10.timelesslib.api.scheduler.TaskHandle;
 import dev.bouncingelf10.timelesslib.api.time.Duration;
 import dev.bouncingelf10.timelesslib.api.time.TimeAnchor;
+import dev.bouncingelf10.timelesslib.api.time.TimeFormat;
 import dev.bouncingelf10.timelesslib.api.time.TimeFormatter;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.DeltaTracker;
@@ -43,8 +44,8 @@ public class DemoHudOverlay implements HudRenderCallback {
     private static int cycleInt = 1;
     private static String stringHasPassed = "60 seconds have NOT passed yet!";
 
-    private static CountdownManager<Minecraft>.Countdown countdown;
-    private static CountdownManager<Minecraft>.Countdown countdownRealtime;
+    private static Countdown countdown;
+    private static Countdown countdownRealtime;
 
     private static double countdownProgressOffset;
     private static double countdownRealtimeProgressOffset;
@@ -64,12 +65,12 @@ public class DemoHudOverlay implements HudRenderCallback {
     private static final AnimationTimeline GUI_TIMELINE_GAMETIME = TimelessLibClient.getClientAnimationManager()
             .createTimeline("gui_gametime")
             .loop(true)
-            .setTimeSource(TimelessClock.TimeSources.GAME_TIME);
+            .setTimeSource(TimeSources.GAME_TIME);
 
     private static final AnimationTimeline GUI_TIMELINE_REALTIME = TimelessLibClient.getClientAnimationManager()
             .createTimeline("gui_realtime")
             .loop(true).pingPong(true)
-            .setTimeSource(TimelessClock.TimeSources.REAL_TIME);
+            .setTimeSource(TimeSources.REAL_TIME);
 
     static {
         Scheduler<Minecraft> scheduler = TimelessLibClient.getClientScheduler();
@@ -244,13 +245,13 @@ public class DemoHudOverlay implements HudRenderCallback {
         guiGraphics.drawString(font, "State: " + countdownState, 10, cy + 10, 0xFFFFFF, false);
         guiGraphics.renderItem(new ItemStack(Items.CLOCK), 10 + (int) countdownProgressOffset, cy + 20);
 
-        guiGraphics.drawString(font, "Remaining: " + countdown.remaining().toString(TimeFormatter.TimeFormat.COMPACT),
+        guiGraphics.drawString(font, "Remaining: " + countdown.remaining().toString(TimeFormat.COMPACT),
                 10, cy + 36, 0xAAAAFF, false);
 
         guiGraphics.drawString(font, "Countdown (Real Time 3s)", 150, cy, 0xFFFFFF, false);
         guiGraphics.drawString(font, "State: " + realtimeCountdownState, 150, cy + 10, 0xFFFFFF, false);
         guiGraphics.renderItem(new ItemStack(Items.CLOCK), 150 + (int) countdownRealtimeProgressOffset, cy + 20);
-        guiGraphics.drawString(font, "Remaining: " + countdownRealtime.remaining().toString(TimeFormatter.TimeFormat.COMPACT),
+        guiGraphics.drawString(font, "Remaining: " + countdownRealtime.remaining().toString(TimeFormat.COMPACT),
                 150, cy + 36, 0xAAAAFF, false);
 
         int cdX = 280;
@@ -268,7 +269,7 @@ public class DemoHudOverlay implements HudRenderCallback {
             guiGraphics.drawString(font, "READY", cdX + 10, cdY, 0x80FF80, false);
         } else {
             Duration r = cooldownManager.remaining(DEMO_ATTACK_KEY);
-            guiGraphics.drawString(font, "Remaining: " + r.toString(TimeFormatter.TimeFormat.COMPACT),
+            guiGraphics.drawString(font, "Remaining: " + r.toString(TimeFormat.COMPACT),
                     cdX + 10, cdY, 0xFF8080, false);
         }
         cdY += 20;
@@ -284,7 +285,7 @@ public class DemoHudOverlay implements HudRenderCallback {
             guiGraphics.drawString(font, "READY", cdX + 10, cdY, 0x80FF80, false);
         } else {
             Duration r = cooldownManager.remaining(DEMO_DASH_KEY);
-            guiGraphics.drawString(font, "Remaining: " + r.toString(TimeFormatter.TimeFormat.COMPACT),
+            guiGraphics.drawString(font, "Remaining: " + r.toString(TimeFormat.COMPACT),
                     cdX + 10, cdY, 0xFF8080, false);
         }
         cdY += 20;
